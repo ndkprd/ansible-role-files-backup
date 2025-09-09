@@ -7,7 +7,7 @@ on:
       - 'v*'
 
 jobs:
-  release-to-galaxy:
+  release:
     uses: ndkprd/actions/.github/workflows/ansible-release-to-galaxy.yaml@main
     secrets:
       galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
