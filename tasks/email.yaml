@@ -1,0 +1,57 @@
+---
+
+- name: Backup | SMTP | Install prerequisite pip libraries.
+  ansible.builtin.pip:
+    name: "xkcdpass"
+    state: present
+
+- name: Backup | SMTP | Generate zip file directory.
+  ansible.builtin.file:
+    path: "{{ files_backup_email_zip_dir }}"
+    state: directory
+    mode: "755"
+
+- name: Backup | SMTP | Generate the zip password.
+  ansible.builtin.set_fact:
+    __zip_password: "{{ lookup('community.general.random_words', min_length=5, num_words=5, delimiter='-', case='capitalize') }}"
+
+- name: Backup | SMTP | Zip all the files.
+  ansible.builtin.shell: >
+    zip -9 -rj -P '{{ __zip_password }}' {{ files_backup_email_zip_dir }}/{{ __email.zip_file_name }} {{ files_backup_dir }}
+  changed_when: false
+
+- name: Backup | SMTP | Send the backup files.
+  community.general.mail:
+    host: "{{  __email.host }}"
+    port: "{{  __email.port }}"
+    username: "{{  __email.username | default(omit) }}"
+    password: "{{  __email.password | default(omit) }}"
+    secure: "{{  __email.secure | default('never') }}"
+    subtype: "{{  __email.subtype | default('plain') }}"
+    from: "{{  __email.from }}"
+    subject: "{{ __email.subject }}"
+    to: "{{  __email.to }}"
+    body: >
+      Hi, your files on from {{ files_backup_dir }} directory of {{ inventory_hostname }}
+      machine have been backed up successfully. You can get the files from the attached zip file.
+
+      {{ files_backup_providers.email.footer }}
+    attach: "{{ files_backup_email_zip_dir }}/{{ __email.zip_file_name }}"
+
+- name: Backup | SMTP | Send the zip password.
+  community.general.mail:
+    host: "{{  __email.host }}"
+    port: "{{  __email.port }}"
+    username: "{{  __email.username | default(omit) }}"
+    password: "{{  __email.password | default(omit) }}"
+    secure: "{{  __email.secure | default('never') }}"
+    subtype: "{{  __email.subtype | default('plain') }}"
+    from: "{{  __email.from }}"
+    subject: "{{ __email.subject }}"
+    to: "{{  __email.to }}"
+    body: |
+      Hi,
+
+      The password for the zip file is: "{{ __zip_password }}".
+
+      {{ files_backup_providers.email.footer }}

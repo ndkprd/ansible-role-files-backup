@@ -1,0 +1,54 @@
+---
+
+- name: Backup | Git | Strip git repo protocol.
+  ansible.builtin.set_fact:
+    __backup_git_repo: "{{ files_backup_providers.git.repo_url | replace('https://', '') | replace('http://', '') }}"
+
+- name: Backup | Git | Prepare git repository.
+  ansible.builtin.shell: |
+    cd "{{ files_backup_dir }}"
+    git init --initial-branch={{ __git.branch }} || true
+    git config --local user.email {{ __git.email }}
+    git config --local user.name {{ __git.user }}
+  register: git_push_result
+  changed_when: false
+  failed_when: git_push_result.rc != 0
+
+- name: Backup | Git | Push git repository.
+  block:
+
+    - name: Backup | Git | Push git repository to intended branch.
+      ansible.builtin.shell: |
+        cd "{{ files_backup_dir }}"
+        git add .
+        git commit -m "Backup {{ __datestamp }}."
+        git remote add origin https://{{ __git.user }}:{{ __git.token }}@{{ __backup_git_repo }} || true
+        git remote set-url origin https://{{ __git.user }}:{{ __git.token }}@{{ __backup_git_repo }}
+        git push -u origin {{ __git.branch }}
+      register: git_push_result
+      no_log: false
+      changed_when: false
+      failed_when: git_push_result.rc != 0
+
+  rescue:
+
+    - name: Backup | Git | Set alternative branch name.
+      ansible.builtin.set_fact:
+        __alt_branch: "ansible/devel/{{ __datestamp }}"
+
+    - name: Backup | Git | Push git repository to alternative branch.
+      ansible.builtin.shell: |
+        cd "{{ files_backup_dir }}"
+        git checkout -b {{ __alt_branch }}
+        git push -u origin {{ __alt_branch }} --force
+      register: git_push_result
+      no_log: false
+      changed_when: false
+      failed_when: git_push_result.rc != 0
+
+    - name: Backup | Git | Notify about failed git push.
+      ansible.builtin.debug:
+        msg: >
+          Failed to push git repository to {{ __git.branch }} branch, pushed to {{ __alt_branch }} instead.
+
+          Please check the {{ __alt_branch }} branch and create merge request."

@@ -1,0 +1,17 @@
+---
+
+- name: Backup | Nexus | Install prerequisite pip libraries.
+  ansible.builtin.pip:
+    name: "nexus3-cli"
+    state: present
+
+- name: Backup | Nexus | Upload files to Nexus repositories.
+  environment:
+    NEXUS3_URL: "{{ __nexus3.url }}"
+    NEXUS3_USERNAME: "{{ __nexus3.username }}"
+    NEXUS3_PASSWORD: "{{ __nexus3.password }}"
+  ansible.builtin.shell: >
+    nexus3 upload --recurse {{ files_backup_dir }} {{ __nexus3.remote_dir }}
+  register: nexus_upload_result
+  changed_when: false
+  failed_when: nexus_upload_result.rc != 0

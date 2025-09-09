@@ -1,0 +1,22 @@
+---
+
+- name: Run pre-tasks.
+  ansible.builtin.import_tasks: pre_tasks.yaml
+
+- name: Run backup via email tasks.
+  vars:
+    __email: "{{ files_backup_providers.email }}"
+  ansible.builtin.include_tasks: email.yaml
+  when: files_backup_email_enabled
+
+- name: Run backup to git tasks.
+  vars:
+    __git: "{{ files_backup_providers.git }}"
+  ansible.builtin.include_tasks: git.yaml
+  when: files_backup_git_enabled
+
+- name: Run backup to Nexus tasks.
+  ansible.builtin.include_tasks: nexus3.yaml
+  vars:
+    __nexus3: "{{ files_backup_providers.nexus3 }}"
+  when: files_backup_nexus3_enabled

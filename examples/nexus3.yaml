@@ -1,0 +1,18 @@
+---
+
+- name: Backup files to email.
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    files_backup_dir: "/tmp/ansible/ssl"
+    files_backup_nexus3_enabled: true
+    files_backup_providers:
+      nexus3:
+        url: "https://registry.example.com"
+        username: "ansible"
+        password: "supersecretpassword"
+        remote_dir: "raws/ssl/test/"
+  roles:
+    # - ansible-role-files-backup # noqa: syntax-check[specific]
+    - ndkprd.files_backup

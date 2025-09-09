@@ -1,0 +1,64 @@
+---
+
+# Directory of files that will be backed up.
+files_backup_dir: ""
+
+# Enable backup providers. The values should be boolean.
+files_backup_email_enabled: false
+files_backup_git_enabled: false
+files_backup_nexus3_enabled: false
+
+# Backup providers configuration details.
+files_backup_providers:
+  # Email backup configurations.
+  email:
+    enabled: "{{ files_backup_email_enabled }}"
+    # Example: smtp.gmail.com
+    host: ""
+    # Email host port. Common example: 25, 465, or 587.
+    port: 587
+    # Email username. Example: user@example.com.
+    username: ""
+    password: ""
+    # The values should be boolean.
+    secure: true
+    # Email content type. Can be 'plain' or 'html'.
+    subtype: plain
+    # Footer of the email.
+    footer: |
+      Best regards,
+      Ansible Backup Bot
+
+      (This email is automatically generated, please do not reply to this email.)
+    # Email "From" header. If using user authentication, this value should be the same as the username. Example: "Ansible Bot<ansible.bot@example.com"
+    from: ""
+    # Subject of the email.
+    subject: "Files Backed Up Successfully"
+    # Email recipients list. Example: ["user01@example.com", "user02@example.com", "user03@example.com"]
+    to: []
+    # The files will be zipped, and the resulted file will have this name.
+    zip_file_name: "{{ __timestamp }}_BACKUP.zip"
+  # Git backup configurations.
+  git:
+    enabled: "{{ files_backup_git_enabled }}"
+    # Git repository URL. Example: https://git.example.com/backup-repo.git
+    repo_url: ""
+    # Git repository branch.
+    branch: main
+    # The Git username that will be used for commit.
+    user: "Ansible"
+    # The Git email that will be used for commit.
+    email: ""
+    # Token that will be used if the git repository require token.
+    token: ""
+  # Nexus3 backup configurations.
+  nexus3:
+    enabled: "{{ files_backup_nexus3_enabled }}"
+    # Nexus3 server URL. Example: https://registry.example.com
+    url: "{{ lookup('env', 'NEXUS3_URL') }}"
+    # The username that will be used for authentication.
+    username: "{{ lookup('env', 'NEXUS3_USERNAME') }}"
+    # The password that will be used for authentication.
+    password: "{{ lookup('env', 'NEXUS3_PASSWORD') }}"
+    # The remote directory in Nexus3. Currently only tested for Raw Repository. Example: /raw-backup/configurations/
+    remote_dir: ""

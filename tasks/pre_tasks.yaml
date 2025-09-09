@@ -1,0 +1,12 @@
+---
+
+- name: Pre-tasks | Get timestamp.
+  ansible.builtin.set_fact:
+    __timestamp: "{{ lookup('ansible.builtin.pipe', 'date -u +%Y%m%d%H%M') }}"
+    __datestamp: "{{ lookup('ansible.builtin.pipe', 'date -u +%Y%m%d') }}"
+
+- name: Pre-tasks | Make sure backup dir exist.
+  ansible.builtin.file:
+    path: "{{ files_backup_dir }}"
+    state: directory
+    mode: "755"

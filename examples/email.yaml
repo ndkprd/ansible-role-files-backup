@@ -1,0 +1,25 @@
+---
+
+- name: Backup files to email.
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    files_backup_dir: "/tmp/ansible/ssl"
+    files_backup_email_enabled: true
+    files_backup_providers:
+      email:
+        host: smtp.example.com
+        port: 25
+        from: "Ansible Backup Bot <ansible@bot.example.com>"
+        subject: "Files Backed Up Successfully"
+        to: ["my-user@example.com"]
+        zip_file_name: "{{ __timestamp }}_BACKUP.zip"
+        footer: |
+          Best regards,
+          Ansible Backup Bot
+
+          (This email is automatically generated, please do not reply to this email.)
+  roles:
+    # - ansible-role-files-backup # noqa: syntax-check[specific]
+    - ndkprd.files_backup

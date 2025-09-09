@@ -1,0 +1,19 @@
+---
+
+- name: Backup files to email.
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    files_backup_dir: "/tmp/ansible/ssl"
+    files_backup_git_enabled: true
+    files_backup_providers:
+      git:
+        repo_url: "https://gitlab.example.com/infra/backups/files-backups.git"
+        branch: main
+        user: ansible
+        email: ansible@bot.example.com
+        token: "glpat-supersecrettoken"
+  roles:
+    # - ansible-role-files-backup # noqa: syntax-check[specific]
+    - ndkprd.files_backup
