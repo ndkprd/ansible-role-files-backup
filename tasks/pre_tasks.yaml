@@ -7,6 +7,9 @@
 
 - name: Pre-tasks | Make sure backup dir exist.
   ansible.builtin.file:
-    path: "{{ files_backup_dir }}"
+    path: "{{ files_backup_dir }}/{{ item }}"
     state: directory
     mode: "755"
+  loop: ["{{ __datestamp }}", "live"]
+  loop_control:
+    label: "{{ files_backup_dir }}/{{ item }}"

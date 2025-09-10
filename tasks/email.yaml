@@ -17,7 +17,7 @@
 
 - name: Backup | SMTP | Zip all the files.
   ansible.builtin.shell: >
-    zip -9 -rj -P '{{ __zip_password }}' {{ files_backup_email_zip_dir }}/{{ __email.zip_file_name }} {{ files_backup_dir }}
+    zip -9 -rj -P '{{ __zip_password }}' {{ files_backup_email_zip_dir }}/{{ __email.zip_file_name }} {{ files_backup_dir }}/{{ __datestamp }}
   changed_when: false
 
 - name: Backup | SMTP | Send the backup files.
