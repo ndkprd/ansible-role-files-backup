@@ -24,8 +24,13 @@ files_backup_providers:
     secure: true
     # Email content type. Can be 'plain' or 'html'.
     subtype: plain
+    # Body of the email.
+    body_content: >
+      Hi, your files on from {{ files_backup_dir }} directory of
+      {{ inventory_hostname }} machine have been backed up successfully.
+      You can get the files from the attached zip file.
     # Footer of the email.
-    footer: |
+    body_footer: |
       Best regards,
       Ansible Backup Bot
 

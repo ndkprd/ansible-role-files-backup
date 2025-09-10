@@ -31,11 +31,11 @@
     from: "{{  __email.from }}"
     subject: "{{ __email.subject }}"
     to: "{{  __email.to }}"
+    cc: "{{  __email.cc | default(omit) }}"
     body: >
-      Hi, your files on from {{ files_backup_dir }} directory of {{ inventory_hostname }}
-      machine have been backed up successfully. You can get the files from the attached zip file.
+      {{ files_backup_providers.email.body_content }}
 
-      {{ files_backup_providers.email.footer }}
+      {{ files_backup_providers.email.body_footer }}
     attach: "{{ files_backup_email_zip_dir }}/{{ __email.zip_file_name }}"
 
 - name: Backup | SMTP | Send the zip password.
@@ -49,6 +49,7 @@
     from: "{{  __email.from }}"
     subject: "{{ __email.subject }}"
     to: "{{  __email.to }}"
+    cc: "{{  __email.cc | default(omit) }}"
     body: |
       Hi,
 

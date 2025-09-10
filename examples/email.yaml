@@ -14,8 +14,13 @@
         from: "Ansible Backup Bot <ansible@bot.example.com>"
         subject: "Files Backed Up Successfully"
         to: ["my-user@example.com"]
+        cc: ""
         zip_file_name: "{{ __timestamp }}_BACKUP.zip"
-        footer: |
+        body_content: >
+          Hi, your files on from {{ files_backup_dir }} directory of
+          {{ inventory_hostname }} machine have been backed up successfully.
+          You can get the files from the attached zip file.
+        body_footer: |
           Best regards,
           Ansible Backup Bot
 

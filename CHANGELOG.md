@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.0.2] - 2025-09-10
+
+### Changed
+
+- Add cc and body content var for email backup.
+
 ## [1.0.1] - 2025-09-10
 
 ### Changed
