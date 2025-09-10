@@ -55,4 +55,4 @@
 
       The password for the zip file is: "{{ __zip_password }}".
 
-      {{ files_backup_providers.email.footer }}
+      {{ files_backup_providers.email.body_footer }}
